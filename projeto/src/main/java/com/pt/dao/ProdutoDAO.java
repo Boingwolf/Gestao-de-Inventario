@@ -42,6 +42,36 @@ public class ProdutoDAO {
     }
 
     // ============================
+    // BUSCAR PRODUTO POR ID
+    // ============================
+    public Produto buscarPorId(int id) {
+        String sql = "SELECT * FROM produtos WHERE id=?";
+
+        try (Connection conn = Conexao.get();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Produto p = new Produto();
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setCategoria(rs.getString("categoria"));
+                    p.setQuantidade(rs.getInt("quantidade"));
+                    p.setPreco(rs.getDouble("preco"));
+                    return p;
+                }
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar produto por id: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    // ============================
     // INSERIR PRODUTO
     // ============================
     public void inserir(Produto p) {
